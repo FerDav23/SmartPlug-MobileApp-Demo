@@ -1,0 +1,51 @@
+{
+  "expo": {
+    "name": "PointsApp",
+    "slug": "PointsApp",
+    "version": "1.0.0",
+    "orientation": "default",
+    "icon": "./app/assets/SmartHome.png",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./app/assets/SmartHome.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "ios": {
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "We need your location to fetch your address.",
+        "NSLocationAlwaysUsageDescription": "We need your location to fetch your address."
+      },
+      "supportsTablet": true
+    },
+    "android": {
+      "permissions": [
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_COARSE_LOCATION"
+      ],
+      "adaptiveIcon": {
+        "foregroundImage": "./app/assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "package": "com.ferdav.PointsApp"
+    },
+    "web": {
+      "favicon": "./app/assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "a1a8178c-51db-470e-8724-920fe09ca0b2"
+      }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/a1a8178c-51db-470e-8724-920fe09ca0b2"
+    },
+    "plugins": [
+      "expo-secure-store"
+    ]
+  }
+}
