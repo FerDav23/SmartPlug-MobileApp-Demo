@@ -10,11 +10,12 @@ const useAuth = () => {
   const getUserApi = useApi(usersApi.getUser);
 
   // Log in by setting the user and storing the token
-  const logIn = (authToken) => {
+  const logIn = async (authToken) => {
     try {
       const decodedUser = jwtDecode(authToken);
       setUser(decodedUser);
-      authStorage.storeToken(authToken);
+      await authStorage.storeToken(authToken);
+      await authStorage.removeDemoLogoutFlag();
       return true; // Indicate successful login
     } catch (error) {
       console.error("Failed to decode auth token:", error);
@@ -22,10 +23,10 @@ const useAuth = () => {
     }
   };
 
-  // Log out by clearing the user and removing the token
-  const logOut = () => {
+  // Log out by removing the token first, then clearing the user
+  const logOut = async () => {
+    await authStorage.removeToken();
     setUser(null);
-    authStorage.removeToken();
   };
 
   // Refresh user data from the backend (e.g., to get updated points)

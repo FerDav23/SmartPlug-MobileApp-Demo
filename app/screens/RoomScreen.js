@@ -42,6 +42,7 @@ function RoomScreen({ navigation }) {
 
     return (
         <ScrollView 
+          style={styles.scrollViewOuter}
           contentContainerStyle={styles.scrollView}
           refreshControl={
             <RefreshControl
@@ -68,12 +69,16 @@ function RoomScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
+  scrollViewOuter: {
+    flex: 1,
+    backgroundColor: colors.backgroundColor,
+  },
   scrollView: {
+    flexGrow: 1,
     width: "100%",
     alignItems: "center",
-    paddingBottom: Platform.OS === "ios" ? 400 : 300, // Ensures enough space for scrolling
+    paddingBottom: 100,
     backgroundColor: colors.backgroundColor,
-    height: "auto"
   },
 
   secondaryContainer: {

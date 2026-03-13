@@ -1,7 +1,9 @@
 import * as SecureStore from "expo-secure-store";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { jwtDecode } from "jwt-decode";
 
 const key = "authToken";
+const DEMO_LOGOUT_FLAG = "demoLogoutFlag";
 
 const storeToken = async (authToken) => {
   try {
@@ -54,4 +56,38 @@ const removeToken = async () => {
   }
 };
 
-export default { getUser, removeToken, storeToken, getToken };
+const setDemoLogoutFlag = async () => {
+  try {
+    await AsyncStorage.setItem(DEMO_LOGOUT_FLAG, "true");
+    return true;
+  } catch (e) {
+    return false;
+  }
+};
+
+const getDemoLogoutFlag = async () => {
+  try {
+    return (await AsyncStorage.getItem(DEMO_LOGOUT_FLAG)) === "true";
+  } catch (e) {
+    return false;
+  }
+};
+
+const removeDemoLogoutFlag = async () => {
+  try {
+    await AsyncStorage.removeItem(DEMO_LOGOUT_FLAG);
+    return true;
+  } catch (e) {
+    return false;
+  }
+};
+
+export default {
+  getUser,
+  removeToken,
+  storeToken,
+  getToken,
+  setDemoLogoutFlag,
+  getDemoLogoutFlag,
+  removeDemoLogoutFlag,
+};

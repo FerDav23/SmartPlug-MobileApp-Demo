@@ -55,11 +55,11 @@ function VentilationScreen({ navigation }) {
 
 const styles = StyleSheet.create({
   scrollView: {
+    flexGrow: 1,
     width: "100%",
     alignItems: "center",
-    paddingBottom: Platform.OS === "ios" ? 200 : 150, // Ensures enough space for scrolling
+    paddingBottom: 100,
     backgroundColor: colors.backgroundColor,
-    height: "auto"
   },
 
   secondaryContainer: {

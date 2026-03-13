@@ -10,6 +10,8 @@ import AuthContext from "./app/auth/context";
 import authApi from "./app/api/auth";
 import useApi from "./app/hooks/useApi";
 import authStorage from "./app/auth/storage";
+import { isDemoMode } from "./app/config/demoMode";
+import { mockAuth } from "./app/api/mock/data";
 
 
 //SplashScreen.preventAutoHideAsync(); // Prevent the splash screen from hiding automatically
@@ -53,26 +55,43 @@ export default function App() {
   const restoreUser = async () => {
     try {
       console.log("App.js - Attempting to restore user...");
-      
+
+      const token = await authStorage.getToken();
+
+      // Demo mode: if no token, either show login (user just logged out) or auto-login
+      if (isDemoMode && !token) {
+        const demoLoggedOut = await authStorage.getDemoLogoutFlag();
+        if (demoLoggedOut) {
+          await authStorage.removeDemoLogoutFlag();
+          setUser(null);
+          return;
+        }
+        await authStorage.storeToken(mockAuth.login.token);
+        const demoUser = await authStorage.getUser();
+        if (demoUser) {
+          setUser(demoUser);
+          return;
+        }
+      }
+
       // First check if the token is valid
       const validToken = await checkToken();
-      
+
       if (!validToken) {
         await authStorage.removeToken();
         setUser(null);
         return;
       }
-      
+
       const currentUser = await authStorage.getUser();
-      
+
       if (!currentUser) {
         console.log("App.js - Could not get user from token");
         return;
       }
-      
+
       console.log("App.js - User restored successfully");
       setUser(currentUser);
-      
     } catch (error) {
       console.warn("App.js - Error restoring user:", error);
       setUser(null);
@@ -118,18 +137,14 @@ export default function App() {
 
   if (!isReady) return null; // Wait until `isReady` is true to render the app
 
-
   return (
-    
     <AuthContext.Provider value={{ user, setUser }}>
       <NavigationContainer onReady={handleNavigationReady}>
-        {/* Animated wrapper to apply the fade-in effect */}
         <Animated.View style={{ ...styles.container, opacity: fadeAnim }}>
-          {user ? <AppNavigator /> : <AuthNavigator />}
+          {user ? <AppNavigator key="app" /> : <AuthNavigator key="auth" />}
         </Animated.View>
       </NavigationContainer>
     </AuthContext.Provider>
- 
   );
 }
 

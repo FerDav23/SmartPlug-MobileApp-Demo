@@ -9,6 +9,16 @@
       "distribution": "internal",
       "channel": "development"
     },
+    "demo": {
+      "distribution": "internal",
+      "channel": "demo",
+      "env": {
+        "EXPO_PUBLIC_DEMO_MODE": "true"
+      },
+      "android": {
+        "buildType": "apk"
+      }
+    },
     "preview": {
       "distribution": "internal",
       "channel": "preview",
@@ -20,7 +30,7 @@
       "autoIncrement": true,
       "channel": "production",
       "android": {
-        "buildType": "aab"
+        "buildType": "app-bundle"
       }
     }
   },

@@ -64,7 +64,7 @@ function RegScreen({ navigation }) {
       return;
     }
     if (response.data.success) {
-      if (logIn(response.data.token)) {
+      if (await logIn(response.data.token)) {
         navigation.navigate(Routes.home);
       } else {
         console.error("Login failed, navigation aborted.");

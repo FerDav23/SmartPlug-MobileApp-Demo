@@ -4,21 +4,26 @@ import {
   Platform,
   StyleSheet,
   View,
+  Text,
+  TouchableOpacity,
   KeyboardAvoidingView,
   Dimensions,
   ScrollView,
 } from "react-native";
+import { MaterialIcons } from "@expo/vector-icons";
 import { Formik } from "formik";
 import * as Yup from "yup";
 
-import LoginButton from "../components/login/LoginButton";
-import LoginInput from "../components/login/LoginInput";
-import RegButton from "../components/login/RegButton";
+import LoginButton from "../components/Login/LoginButton";
+import LoginInput from "../components/Login/LoginInput";
+import RegButton from "../components/Login/RegButton";
 import Routes from "../navigation/Routes";
 import colors from "../config/colors";
 import ErrorMessage from "../components/generalComponents/ErrorMessage";
 import LoadingIndicator from "../components/generalComponents/LoadingIndicator";
 import GreenLine from "../components/generalComponents/GreenLine";
+import DemoInstructionsModal from "../components/DemoInstructionsModal";
+import { isDemoMode } from "../config/demoMode";
 import authApi from "../api/auth";
 import useApi from "../hooks/useApi";
 import useAuth from "../auth/useAuth";
@@ -38,9 +43,13 @@ const validationSchema = Yup.object().shape({
 
 
 function LoginScreen({ navigation }) {
-    //const [screenLoading, setScreenLoading] = useState(false);
+    const [showDemoModal, setShowDemoModal] = useState(false);
     const loginApi = useApi(authApi.login);
-    const auth = useAuth(); // Call the useAuth hook to get the auth object
+    const auth = useAuth();
+
+    useEffect(() => {
+      if (isDemoMode) setShowDemoModal(true);
+    }, []);
 
     const handleLogin = async (values) => {
       console.log("in login");
@@ -53,11 +62,7 @@ function LoginScreen({ navigation }) {
 
         }
     }
-    useEffect(() => {
-        
-    }, []);
-
-  return (
+    return (
     <View style={styles.container}>
       <LoadingIndicator visible={loginApi.loading} />
 
@@ -73,7 +78,17 @@ function LoginScreen({ navigation }) {
             style={styles.logo}
             resizeMode="contain"
           />
-          <ScrollView contentContainerStyle={styles.scrollContainer}>
+          <ScrollView contentContainerStyle={styles.scrollContainer} showsVerticalScrollIndicator={false}>
+            {isDemoMode && (
+              <TouchableOpacity
+                style={styles.demoInstructionsButton}
+                onPress={() => setShowDemoModal(true)}
+                activeOpacity={0.8}
+              >
+                <MaterialIcons name="info-outline" size={20} color={colors.skyblue} />
+                <Text style={styles.demoInstructionsButtonText}>How does the demo work?</Text>
+              </TouchableOpacity>
+            )}
             <View style={styles.secondContainer}>
               <Formik
                 initialValues={{ user: "", password: "" }}
@@ -112,6 +127,13 @@ function LoginScreen({ navigation }) {
           </ScrollView>
         </View>
       </KeyboardAvoidingView>
+
+      {isDemoMode && (
+        <DemoInstructionsModal
+          visible={showDemoModal}
+          onDismiss={() => setShowDemoModal(false)}
+        />
+      )}
     </View>
   );
 }
@@ -149,8 +171,36 @@ const styles = StyleSheet.create({
       width: "100%",
       alignItems: "center",
       justifyContent: "center",
-      marginTop: 20,  // Reduced spacing for better centering
-    
+      marginTop: 20,
+    },
+    demoInstructionsButton: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "center",
+      gap: 8,
+      paddingVertical: 12,
+      paddingHorizontal: 16,
+      marginBottom: 16,
+      backgroundColor: colors.white,
+      borderRadius: 10,
+      borderWidth: 1,
+      borderColor: colors.skyblue,
+      ...Platform.select({
+        ios: {
+          shadowColor: colors.shadowColor,
+          shadowOffset: { width: 0, height: 1 },
+          shadowOpacity: 0.15,
+          shadowRadius: 3,
+        },
+        android: {
+          elevation: 2,
+        },
+      }),
+    },
+    demoInstructionsButtonText: {
+      fontSize: 15,
+      color: colors.skyblue,
+      fontWeight: "600",
     },
   });
   
