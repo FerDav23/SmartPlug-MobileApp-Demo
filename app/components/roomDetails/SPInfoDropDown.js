@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet, Dimensions } from "react-native";
 import colors from "../../config/colors";
+
+// Fixed width so the component never grows when expanded (matches parent infoContainer)
+const CONTAINER_WIDTH = Math.min(Dimensions.get("window").width - 34, 400);
 import AntDesign from "@expo/vector-icons/AntDesign";
 import elementStyles from "../../config/elementStyles";
 import textFont from "../../config/textFont";
@@ -66,9 +69,9 @@ export default function SPInfoDropdown({ smartPlugName, smartPlugId, energyConsu
 
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { width: CONTAINER_WIDTH }]}>
       {/* Dropdown Button */}
-      <TouchableOpacity style={elementStyles.container} onPress={() => setExpanded(!expanded)}>
+      <TouchableOpacity style={[elementStyles.container, { width: CONTAINER_WIDTH }]} onPress={() => setExpanded(!expanded)}>
         <View style={styles.nameContainer}>
           <Text style={[styles.buttonText, textFont.text]}>{smartPlugName}</Text>
           <View style={[styles.statusDot, active ? styles.activeDot : styles.inactiveDot]} />
@@ -83,12 +86,14 @@ export default function SPInfoDropdown({ smartPlugName, smartPlugId, energyConsu
 
       {/* Dropdown Content */}
       {expanded && (
-        <View style={styles.dropdownContent}>
+        <View style={[styles.dropdownContent, { width: CONTAINER_WIDTH }]}>
           <View style={styles.titleContainer}>
             <Text style={[styles.chartTitle, textFont.text]}>Hourly Energy Consumption</Text>
             <View style={styles.titleUnderline} />
           </View>
-          <BarChartCK chartData={chartData} xLabel="" yLabel="" />
+          <View style={styles.chartWrapper}>
+            <BarChartCK chartData={chartData} xLabel="" yLabel="" />
+          </View>
 
           <Text style={[textFont.text, styles.titleText ]}>Total Energy Consumption</Text>
           <Text style={[textFont.text, styles.infoText ]}>
@@ -122,7 +127,7 @@ export default function SPInfoDropdown({ smartPlugName, smartPlugId, energyConsu
 const styles = StyleSheet.create({
   container: {
     alignItems: "center",
-    width: "90%",
+    overflow: "hidden",
   },
   nameContainer: {
     flexDirection: 'row',
@@ -148,9 +153,13 @@ const styles = StyleSheet.create({
   icon: {
     marginLeft: 10,
   },
+  chartWrapper: {
+    width: "100%",
+    overflow: "hidden",
+  },
   dropdownContent: {
     marginBottom: 12,
-    width: "100%",
+    overflow: "hidden",
     padding: 20,
     backgroundColor: colors.white,
     borderRadius: 16,
